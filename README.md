@@ -1,10 +1,10 @@
 # SciDetectorApp
 
-/*
+
 Code by BoyceHong.
 Time at 2016.07.19.
 Any problem cantact solidman@msn.cn
-*/
+
 
   ===========================================================
                   ASUSTek ACPI SCI Detector
