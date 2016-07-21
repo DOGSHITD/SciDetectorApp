@@ -15,3 +15,8 @@ Any problem cantact solidman@msn.cn
   [2] Administrator to run.
   [2] Press Ctrl + Z to quit. If not, the log file will miss.
   -----------------------------------------------------------
+
+Version 1.0:
+  1. Supported ACPI version: 2/3/5.
+  2. Supported MB & NB,auto detect EC exitence.
+  3. Generate log file.
