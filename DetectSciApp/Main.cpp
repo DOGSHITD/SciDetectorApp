@@ -38,6 +38,7 @@ BOOL GetGPEParameter(UINT32 *GPE0_BLK, UINT8 *GPE0_BLK_LEN)
 	FACP_20 FACPTable_20 = { 0 };
 	FACP_30 FACPTable_30 = { 0 };
 	FACP_50 FACPTable_50 = { 0 };
+	FACP_60 FACPTable_60 = { 0 };
 	UINT retVal = 0;
 
 	retVal = GetSystemFirmwareTable('ACPI', 'PCAF', &AcpiHeader, sizeof(AcpiHeader));
@@ -79,8 +80,16 @@ BOOL GetGPEParameter(UINT32 *GPE0_BLK, UINT8 *GPE0_BLK_LEN)
 			(*GPE0_BLK_LEN) = FACPTable_50.GPE0_BLK_LEN;
 			break;
 		}
+		case 6: {
+			retVal = GetSystemFirmwareTable('ACPI', 'PCAF', &FACPTable_60, sizeof(FACPTable_60));
+			if (retVal < 95)
+				return -1;
+			(*GPE0_BLK) = FACPTable_60.GPE0_BLK;
+			(*GPE0_BLK_LEN) = FACPTable_60.GPE0_BLK_LEN;
+			break;
+		}
 		default: {
-			printf("[SCI Detector Warning]  This tool only support ACPI FACP version 2/3/5 platform\n");
+			printf("[SCI Detector Warning]  This tool only support ACPI FACP version 2/3/5/6 platform\n");
 			printf("			Your Computer Platform ACPI FACP version:%d\n", AcpiHeader.Revision);
 			return -1;
 		}
