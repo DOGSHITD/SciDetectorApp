@@ -1,7 +1,7 @@
 /*
 Code by BoyceHong.
 Time at 2016.07.19.
-Any problem cantact boyce_hong@asus.com
+Any problem cantact solidman@msn.cn
 */
 
 #include "Main.h"
@@ -21,6 +21,11 @@ void Hint(void)
 	printf("  -----------------------------------------------------------\n\n");
 }
 
+/*
+  Judge if there is EC component on target platform.
+	Return TURE:  Support
+	Return FALSE: Not Support
+*/
 BOOL isECSupport(void)
 {
 	UINT8 pBuffer[1000];
@@ -31,6 +36,9 @@ BOOL isECSupport(void)
 	return retVal;
 }
 
+/*
+  Get the GPE0 block registers and GPE0 block length from ACPI table.
+*/
 BOOL GetGPEParameter(UINT32 *GPE0_BLK, UINT8 *GPE0_BLK_LEN)
 {
 	ACPI_HDR AcpiHeader = { 0 };
@@ -98,6 +106,9 @@ BOOL GetGPEParameter(UINT32 *GPE0_BLK, UINT8 *GPE0_BLK_LEN)
 	return 0;
 }
 
+/*
+  Return the log2(arg).
+*/
 UINT8 log2(UINT32 value)
 {
 	if (1 == value)
@@ -106,6 +117,9 @@ UINT8 log2(UINT32 value)
 		return (1 + log2(value >> 1));
 }
 
+/*
+  Get the Qxx from EC 0x60/0x64.
+*/
 UINT8 QueryCommand(LPVOID pDataPack)
 {
 	UINT8 Data = 0;
@@ -119,6 +133,9 @@ UINT8 QueryCommand(LPVOID pDataPack)
 	return Data;
 }
 
+/*
+  New thread to record log into local file.
+*/
 DWORD WINAPI RecordLog(LPVOID pDataPack)
 {
 	HANDLE gEvent = NULL;
@@ -166,6 +183,9 @@ DWORD WINAPI RecordLog(LPVOID pDataPack)
 	return 0;
 }
 
+/*
+  New thread to query Lxx event from GPE0 block directly.
+*/
 DWORD WINAPI QueryLxx(LPVOID pDataPack)
 {
 	HANDLE gEvent = NULL;
@@ -184,7 +204,7 @@ DWORD WINAPI QueryLxx(LPVOID pDataPack)
 	gEvent = OpenEvent(SYNCHRONIZE, FALSE, L"TimerEvent");
 	if (NULL != gEvent) {
 		while (((DATA_PACKET *)pDataPack)->isDetecting) {
-//			WaitForSingleObject(((DATA_PACKET *)pDataPack)->gMutex, INFINITE);
+			//WaitForSingleObject(((DATA_PACKET *)pDataPack)->gMutex, INFINITE);
 			WaitForSingleObject(gEvent, QueryFreq);
 			ResetEvent(gEvent);
 			
@@ -214,7 +234,7 @@ DWORD WINAPI QueryLxx(LPVOID pDataPack)
 			else {
 				isNoneKey = TRUE;
 			}
-//			ReleaseMutex(((DATA_PACKET *)pDataPack)->gMutex);
+			//ReleaseMutex(((DATA_PACKET *)pDataPack)->gMutex);
 		}
 	}
 	printf("[SCI Detector]	Exit Detect Lxx Thread\n");
@@ -226,6 +246,9 @@ DWORD WINAPI QueryLxx(LPVOID pDataPack)
 	return 0;
 }
 
+/*
+  New thread to query Qxx from EC.
+*/
 DWORD WINAPI QueryQxx(LPVOID pDataPack)
 {
 	HANDLE gEvent = NULL;
@@ -268,6 +291,9 @@ DWORD WINAPI QueryQxx(LPVOID pDataPack)
 	return 0;
 }
 
+/*
+  Main method.
+*/
 int _tmain(int argc, _TCHAR* argv[])
 {
 	LoadATSZIoDriver();
@@ -285,6 +311,7 @@ int _tmain(int argc, _TCHAR* argv[])
 		printf("[SCI Detector Warning]	Get ACPI FACP Table Failed\n");
 		return -1;	
 	}
+
 	//printf("GPE0_BLK:0x%X  GPE0_BLK_LEN:%d(Bytes)\n", GPE0_BLK, GPE0_BLK_LEN);
 
 	if (NULL == (gEvent = CreateEvent(NULL, TRUE, FALSE, L"TimerEvent"))) {

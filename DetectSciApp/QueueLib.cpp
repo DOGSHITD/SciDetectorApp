@@ -1,10 +1,16 @@
 #include "QueueLib.h"
 
+/*
+  Decode from queue.
+*/
 BOOL isEmpty(PQUEUE_NODE headPtr)
 {
 	return (NULL == headPtr);
 }
 
+/*
+  Encode to queue.
+*/
 BOOL enqueue(PQUEUE_NODE *headPtr, PQUEUE_NODE *tailPtr, CHAR *string)
 {
 	PQUEUE_NODE newPtr;
@@ -32,6 +38,9 @@ BOOL enqueue(PQUEUE_NODE *headPtr, PQUEUE_NODE *tailPtr, CHAR *string)
 	return 0;
 }
 
+/*
+  Judge if the queue is empty.
+*/
 CHAR* dequeue(PQUEUE_NODE *headPtr, PQUEUE_NODE *tailPtr)
 {
 	CHAR *string;
